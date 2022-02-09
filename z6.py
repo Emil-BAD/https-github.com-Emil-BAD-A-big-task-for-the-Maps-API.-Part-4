@@ -54,6 +54,13 @@ class MapParams(object):
     def ll(self):
         return ll(self.lon, self.lat)
 
+    # Обновление параметров карты по нажатой клавише.
+    def update(self, event):
+        if event.key == pygame.K_PAGEUP and self.zoom < 19:  # PG_UP
+            self.zoom += 1
+        elif event.key == pygame.K_PAGEDOWN and self.zoom > 2:  # PG_DOWN
+            self.zoom -= 1
+
     # Преобразование экранных координат в географические.
     def screen_to_geo(self, pos):
         dy = 225 - pos[1]
@@ -115,11 +122,17 @@ def main():
 
     # Заводим объект, в котором будем хранить все параметры отрисовки карты.
     mp = MapParams()
+    running = True
 
-    while True:
-        event = pygame.event.wait()
-        if event.type == pygame.QUIT:  # Выход из программы
-            break
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:  # Выход из программы
+                running = False
+                break
+            elif event.type == pygame.KEYUP:  # Обрабатываем различные нажатые клавиши.
+                mp.update(event)
+            else:
+                continue
 
         # Загружаем карту, используя текущие параметры.
         map_file = load_map(mp)
