@@ -29,7 +29,6 @@ class SearchResult(object):
     def __init__(self, point, address, postal_code=None):
         self.point = point
         self.address = address
-        self.postal_code = postal_code
 
 
 # Параметры отображения карты:
@@ -89,17 +88,6 @@ class MapParams(object):
         ly = self.lat + dy * coord_to_geo_y * math.cos(math.radians(self.lat)) * math.pow(2,
                                                                                           15 - self.zoom)
         return lx, ly
-
-    # Добавить результат геопоиска на карту.
-    def add_reverse_toponym_search(self, pos):
-        point = self.screen_to_geo(pos)
-        toponym = reverse_geocode(ll(point[0], point[1]))
-        self.search_result = SearchResult(
-            point,
-            toponym["metaDataProperty"]["GeocoderMetaData"]["text"] if toponym else None,
-            toponym["metaDataProperty"]["GeocoderMetaData"]["Address"].get(
-                "postal_code") if toponym else None)
-
 
 # Создание карты с соответствующими параметрами.
 def load_map(mp):
