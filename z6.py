@@ -41,8 +41,8 @@ class MapParams(object):
         try:
             self.lat = float(sys.argv[1])  # Координаты центра карты на старте.
             self.lon = float(sys.argv[2])
-        except IndexError:
-            print("Аргументов нету")
+        except (IndexError, ValueError):
+            print("Не верные координаты (аргументы)")
             exit()
         self.zoom = 15  # Масштаб карты на старте.
         self.type = "map"  # Тип карты на старте.
@@ -56,10 +56,24 @@ class MapParams(object):
 
     # Обновление параметров карты по нажатой клавише.
     def update(self, event):
+        print(self.lat)
         if event.key == pygame.K_PAGEUP and self.zoom < 19:  # PG_UP
             self.zoom += 1
         elif event.key == pygame.K_PAGEDOWN and self.zoom > 2:  # PG_DOWN
             self.zoom -= 1
+        elif event.key == pygame.K_LEFT:  # LEFT_ARROW
+            self.lon -= LON_STEP * math.pow(2, 15 - self.zoom)
+        elif event.key == pygame.K_RIGHT:  # RIGHT_ARROW
+            self.lon += LON_STEP * math.pow(2, 15 - self.zoom)
+        elif event.key == pygame.K_UP and self.lat < 85:  # UP_ARROW
+            self.lat += LAT_STEP * math.pow(2, 15 - self.zoom)
+        elif event.key == pygame.K_DOWN and self.lat > -85:  # DOWN_ARROW
+            self.lat -= LAT_STEP * math.pow(2, 15 - self.zoom)
+
+        if self.lon > 180: self.lon -= 360
+        if self.lon < -180: self.lon += 360
+        if self.lat > 70: self.lat = 70
+        if self.lat < -70: self.lat = -70
 
     # Преобразование экранных координат в географические.
     def screen_to_geo(self, pos):
