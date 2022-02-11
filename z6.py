@@ -12,7 +12,7 @@ from bis import find_business
 # это не готовое решение. Здесь лишь примеры реализации некоторой функциональности из задач урока.
 
 # Подобранные константы для поведения карты.
-LAT_STEP = 0.008  # Шаги при движении карты по широте и долготе
+LAT_STEP = 0.002  # Шаги при движении карты по широте и долготе
 LON_STEP = 0.002
 coord_to_geo_x = 0.0000428  # Пропорции пиксельных и географических координат.
 coord_to_geo_y = 0.0000428
@@ -69,6 +69,12 @@ class MapParams(object):
             self.lat += LAT_STEP * math.pow(2, 15 - self.zoom)
         elif event.key == pygame.K_DOWN and self.lat > -85:  # DOWN_ARROW
             self.lat -= LAT_STEP * math.pow(2, 15 - self.zoom)
+        elif event.key == pygame.K_1:  # 1
+            self.type = "map"
+        elif event.key == pygame.K_2:  # 2
+            self.type = "sat"
+        elif event.key == pygame.K_3:  # 3
+            self.type = "sat,skl"
 
         if self.lon > 180: self.lon -= 360
         if self.lon < -180: self.lon += 360
